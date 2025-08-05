@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>स्टोरी ऐप | Story App</title>
+    <style>
+        /* --- गूगल फ़ॉन्ट्स --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Tiro+Devanagari+Hindi:wght@400&display=swap');
+
+        /* --- बेसिक स्टाइल्स --- */
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --background-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Tiro Devanagari Hindi', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- हेडर और नेविगेशन --- */
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icons .icon {
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .nav-icons .icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- स्क्रीन मैनेजमेंट --- */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .screen.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- लॉगिन स्क्रीन --- */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: opacity 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .back-btn {
+            margin-top: 15px;
+            background: #ccc;
+            color: #333;
+        }
+
+        /* --- सर्च बार --- */
+        .search-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        #search-bar {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* --- कैटेगरी और स्टोरी कार्ड्स --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
+            display: inline-block;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* --- स्टोरी डिटेल स्क्रीन --- */
+        #story-detail-screen .story-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        #story-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+        
+        #story-author {
+            font-size: 1.2rem;
+            color: #555;
+            font-style: italic;
+        }
+        
+        #story-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e9e9e9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        #favorite-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.8rem;
+            color: #ccc;
+        }
+        #favorite-btn.favorited {
+            color: #ff4757;
+        }
+        
+        #audio-player {
+            width: calc(100% - 50px);
+        }
+        
+        #story-content {
+            font-family: 'Tiro Devanagari Hindi', serif;
+            font-size: 1.2rem;
+            text-align: justify;
+            white-space: pre-wrap; /* प्रिजर्व स्पेसिंग और लाइन ब्रेक */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- लॉगिन स्क्रीन -->
+    <div id="login-screen" class="screen active">
+        <div class="login-box">
+            <h2>स्टोरी ऐप में आपका स्वागत है</h2>
+            <p style="margin-bottom: 20px; color: #666;">लॉगिन करके अपनी पसंदीदा कहानियाँ सेव करें।</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <input type="text" id="username" placeholder="यूज़रनेम (कुछ भी डालें)" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="पासवर्ड (कुछ भी डालें)" required>
+                </div>
+                <button type="submit" class="btn">लॉगिन / साइन-अप</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- मेन ऐप का हिस्सा (लॉगिन के बाद दिखता है) -->
+    <div id="main-app" style="display: none;">
+        <header>
+            <h1 id="app-title">स्टोरीज़</h1>
+            <div class="nav-icons">
+                <span id="favorites-icon" class="icon" title="पसंदीदा">❤️</span>
+                <span id="user-icon" class="icon" title="प्रोफ़ाइल">👤</span>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- होम स्क्रीन: कैटेगरी -->
+            <div id="home-screen" class="screen">
+                <div class="search-container">
+                    <input type="text" id="search-bar" placeholder="कहानी या लेखक खोजें...">
+                </div>
+                <h2 class="section-title">कैटेगरीज़</h2>
+                <div id="category-grid" class="grid-container">
+                    <!-- कैटेगरी यहाँ JavaScript से आएंगी -->
+                </div>
+            </div>
+
+            <!-- स्टोरी लिस्ट स्क्रीन -->
+            <div id="story-list-screen" class="screen">
+                <button class="btn back-btn" data-target="home-screen">← वापस कैटेगरी पर</button>
+                <h2 id="list-title" class="section-title"></h2>
+                <div id="story-list-grid" class="grid-container">
+                    <!-- स्टोरी लिस्ट यहाँ JavaScript से आएगी -->
+                </div>
+            </div>
+
+            <!-- स्टोरी डिटेल स्क्रीन -->
+            <div id="story-detail-screen" class="screen">
+                <button class="btn back-btn" data-target="story-list-screen">← वापस लिस्ट पर</button>
+                <div class="story-header">
+                    <h2 id="story-title"></h2>
+                    <p id="story-author"></p>
+                </div>
+                <div id="story-controls">
+                     <button id="favorite-btn" title="पसंदीदा में जोड़ें">❤️</button>
+                     <audio id="audio-player" controls></audio>
+                </div>
+                <p id="story-content"></p>
+            </div>
+
+            <!-- पसंदीदा कहानियों की स्क्रीन -->
+            <div id="favorites-screen" class="screen">
+                <button class="btn back-btn" data-target="home-screen">← वापस होम पर</button>
+                <h2 class="section-title">मेरी पसंदीदा कहानियाँ</h2>
+                <div id="favorites-grid" class="grid-container">
+                    <!-- पसंदीदा कहानियाँ यहाँ आएंगी -->
+                </div>
+            </div>
+
+             <!-- खोज के परिणाम की स्क्रीन -->
+            <div id="search-results-screen" class="screen">
+                <button class="btn back-btn" data-target="home-screen">← वापस होम पर</button>
+                <h2 id="search-title" class="section-title">खोज परिणाम</h2>
+                <div id="search-results-grid" class="grid-container">
+                    <!-- खोज के परिणाम यहाँ आएंगे -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- डेटाबेस सिमुलेशन ---
+            const storiesDB = [
+                { id: 1, title: 'प्यासा कौआ', author: 'ईसप', category: 'बच्चों की कहानियाँ', content: 'एक बार एक कौआ बहुत प्यासा था। वह पानी की तलाश में इधर-उधर उड़ रहा था।\n\nउसे एक घड़ा दिखाई दिया। जब उसने घड़े में झाँका, तो पानी बहुत नीचे था। उसकी चोंच पानी तक नहीं पहुँच पा रही थी।\n\nतभी उसे एक उपाय सूझा। उसने पास पड़े कंकड़ एक-एक करके घड़े में डालने शुरू कर दिए। धीरे-धीरे पानी ऊपर आ गया। कौवे ने पानी पिया और अपनी प्यास बुझाई।\n\nसीख: जहाँ चाह, वहाँ राह।', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                { id: 2, title: 'शेर और चूहा', author: 'विष्णु शर्मा', category: 'बच्चों की कहानियाँ', content: 'एक जंगल में एक शेर सो रहा था। एक चूहा आया और उसके ऊपर कूदने लगा। शेर की नींद खुल गई और उसने चूहे को पकड़ लिया।\n\nचूहे ने गिड़गिड़ाते हुए कहा, "महाराज, मुझे छोड़ दें। मैं आपके काम आ सकता हूँ।" शेर हँसा और उसे जाने दिया।\n\nकुछ दिनों बाद, शेर एक शिकारी के जाल में फँस गया। वह ज़ोर-ज़ोर से दहाड़ने लगा। चूहे ने उसकी आवाज़ सुनी और वहाँ पहुँच गया। उसने अपने तेज़ दाँतों से जाल काट दिया और शेर को आज़ाद कर दिया।\n\nसीख: कभी किसी को छोटा नहीं समझना चाहिए।', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+                { id: 3, title: 'अजनबी साया', author: 'विक्रम अरोड़ा', category: 'हॉरर', content: 'अमावस की रात थी। रोहित अपनी कार से एक सुनसान सड़क से गुज़र रहा था। अचानक उसकी कार बंद हो गई। उसने बाहर निकलकर देखा, पर कुछ समझ नहीं आया।\n\nदूर उसे एक परछाई दिखी जो उसकी तरफ बढ़ रही थी। जैसे-जैसे वो पास आती गई, रोहित का दिल ज़ोर-ज़ोर से धड़कने लगा। वो कोई इंसान नहीं लग रहा था। उसकी आँखें अंधेरे में चमक रही थीं।\n\nरोहित डर के मारे वापस कार में बैठ गया और दरवाज़े लॉक कर लिए। साया कार के पास आकर रुक गया और शीशे पर खरोंचने लगा।', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+                { id: 4, title: 'पहली मुलाकात', author: 'प्रिया सिंह', category: 'रोमांस', content: 'रिया एक कैफे में अपनी कॉफ़ी का इंतज़ार कर रही थी। तभी एक लड़का गलती से उससे टकरा गया और उसकी कॉफ़ी रिया की ड्रेस पर गिर गई।\n\n"ओह! मैं बहुत शर्मिंदा हूँ," लड़के ने कहा, जिसका नाम करण था। रिया थोड़ी नाराज़ थी, पर करण की मासूमियत देखकर मुस्कुरा दी।\n\nकरण ने उसे एक नई ड्रेस खरीदने की पेशकश की। यहीं से उनकी बातचीत शुरू हुई और ये उनकी पहली मुलाकात, एक खूबसूरत रिश्ते की शुरुआत बन गई।', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+                { id: 5, title: 'अंतरिक्ष की यात्रा', author: 'डॉ. विज्ञान', category: 'फिक्शन', content: 'वर्ष 2077। कैप्टन आरव अपने यान 'स्टारगेज़र' में मंगल ग्रह की ओर बढ़ रहे थे। यह मानव जाति का मंगल पर पहला मानव मिशन था।\n\nयात्रा के दौरान, उन्हें एक अज्ञात सिग्नल मिला। यह सिग्नल किसी भी ज्ञात सभ्यता का नहीं था। आरव ने अपनी टीम के साथ सिग्नल के स्रोत का पता लगाने का फैसला किया।\n\nवे एक ऐसे ग्रह पर पहुँचे जो पूरी तरह से क्रिस्टल का बना था। वहाँ उन्हें ऊर्जा के रूप में रहने वाले प्राणी मिले, जिन्होंने आरव का स्वागत किया। यह ब्रह्मांड में मानवता की पहली एलियन मुलाकात थी।', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
+                { id: 6, title: 'चार्ल्स डार्विन का सफर', author: 'ज्ञान प्रकाश', category: 'नॉन-फिक्शन', content: 'चार्ल्स डार्विन एक ब्रिटिश प्रकृतिवादी थे। 1831 में, वे एचएमएस बीगल नामक जहाज पर पाँच साल की लंबी यात्रा पर निकले।\n\nइस यात्रा के दौरान, उन्होंने विभिन्न महाद्वीपों और द्वीपों पर पौधों, जानवरों और जीवाश्मों का अध्ययन किया। गैलापागोस द्वीप समूह पर, उन्होंने फिन्चेस (चिड़ियों) की विभिन्न प्रजातियों को देखा, जिनकी चोंच अलग-अलग द्वीपों पर अलग-अलग थीं।\n\nइन अवलोकनों ने उन्हें 'प्राकृतिक चयन' (Natural Selection) के सिद्धांत को विकसित करने के लिए प्रेरित किया, जो उनके प्रसिद्ध काम "ऑन द ओरिजिन ऑफ स्पीशीज़" का आधार बना।', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
+            ];
+
+            // --- DOM एलिमेंट्स ---
+            const loginScreen = document.getElementById('login-screen');
+            const mainApp = document.getElementById('main-app');
+            const loginForm = document.getElementById('login-form');
+            
+            const screens = document.querySelectorAll('.screen');
+            const appTitle = document.getElementById('app-title');
+            
+            const categoryGrid = document.getElementById('category-grid');
+            const storyListGrid = document.getElementById('story-list-grid');
+            const listTitle = document.getElementById('list-title');
+            
+            const storyTitle = document.getElementById('story-title');
+            const storyAuthor = document.getElementById('story-author');
+            const storyContent = document.getElementById('story-content');
+            const audioPlayer = document.getElementById('audio-player');
+            const favoriteBtn = document.getElementById('favorite-btn');
+            
+            const favoritesIcon = document.getElementById('favorites-icon');
+            const favoritesGrid = document.getElementById('favorites-grid');
+            
+            const searchBar = document.getElementById('search-bar');
+            const searchResultsGrid = document.getElementById('search-results-grid');
+            const searchTitle = document.getElementById('search-title');
+            
+
+            // --- ऐप स्टेट ---
+            let currentUser = null;
+            let currentFavorites = [];
+            let currentScreen = 'home-screen'; // स्टोरी डिटेल से वापस आने के लिए
+            let previousScreen = 'home-screen';
+
+
+            // --- फंक्शन्स ---
+
+            // स्क्रीन बदलने का फंक्शन
+            function showScreen(screenId) {
+                screens.forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                document.getElementById(screenId).classList.add('active');
+                currentScreen = screenId;
+                window.scrollTo(0, 0); // हर स्क्रीन चेंज पर टॉप पर स्क्रॉल करें
+            }
+
+            // लॉगिन फंक्शन
+            function handleLogin(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                if(username.trim() === '') {
+                    alert('कृपया एक यूज़रनेम डालें।');
+                    return;
+                }
+                currentUser = { name: username };
+                loginScreen.style.display = 'none';
+                mainApp.style.display = 'block';
+                loadFavorites(); // लॉगिन के बाद पसंदीदा कहानियाँ लोड करें
+                initializeApp();
+            }
+
+            // ऐप शुरू करने का फंक्शन
+            function initializeApp() {
+                showScreen('home-screen');
+                renderCategories();
+            }
+
+            // कैटेगरीज़ को होम स्क्रीन पर दिखाने का फंक्शन
+            function renderCategories() {
+                const categories = [...new Set(storiesDB.map(story => story.category))];
+                categoryGrid.innerHTML = '';
+                categories.forEach(category => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.dataset.category = category;
+                    card.innerHTML = `
+                        <div class="card-content">
+                            <h3>${category}</h3>
+                            <p>${storiesDB.filter(s => s.category === category).length} कहानियाँ</p>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => showStoryList(category));
+                    categoryGrid.appendChild(card);
+                });
+            }
+
+            // किसी एक कैटेगरी की कहानियों की लिस्ट दिखाने का फंक्शन
+            function showStoryList(category) {
+                previousScreen = 'home-screen';
+                listTitle.textContent = category;
+                const stories = storiesDB.filter(story => story.category === category);
+                renderStoryGrid(storyListGrid, stories);
+                showScreen('story-list-screen');
+            }
+            
+            // स्टोरी डिटेल दिखाने का फंक्शन
+            function showStoryDetail(storyId) {
+                 // ट्रैक करें कि हम कहाँ से आए हैं
+                if (currentScreen !== 'story-detail-screen') {
+                    previousScreen = currentScreen;
+                }
+                
+                const story = storiesDB.find(s => s.id === storyId);
+                if (!story) return;
+
+                storyTitle.textContent = story.title;
+                storyAuthor.textContent = `लेखक: ${story.author}`;
+                storyContent.textContent = story.content;
+                audioPlayer.src = story.audioSrc;
+                favoriteBtn.dataset.storyId = story.id;
+
+                updateFavoriteButton(story.id);
+                showScreen('story-detail-screen');
+            }
+
+            // पसंदीदा बटन का स्टेटस अपडेट करने का फंक्शन
+            function updateFavoriteButton(storyId) {
+                if (currentFavorites.includes(storyId)) {
+                    favoriteBtn.classList.add('favorited');
+                    favoriteBtn.title = "पसंदीदा से हटाएँ";
+                } else {
+                    favoriteBtn.classList.remove('favorited');
+                    favoriteBtn.title = "पसंदीदा में जोड़ें";
+                }
+            }
+            
+            // पसंदीदा कहानियों को टॉगल करने का फंक्शन
+            function toggleFavorite() {
+                const storyId = parseInt(favoriteBtn.dataset.storyId);
+                const index = currentFavorites.indexOf(storyId);
+                if (index > -1) {
+                    currentFavorites.splice(index, 1); // हटाएँ
+                } else {
+                    currentFavorites.push(storyId); // जोड़ें
+              }
+              
+                updateFavoriteButton(storyId);
+                saveFavorites(); // localStorage में सेव करें
+            }
+            
+            // पसंदीदा कहानियों को localStorage में सेव करने का फंक्शन
+            function saveFavorites() {
+                localStorage.setItem(`favorites_${currentUser.name}`, JSON.stringify(currentFavorites));
+            }
+            
+            // localStorage से पसंदीदा कहानियों को लोड करने का फंक्शन
+            function loadFavorites() {
+                const saved = localStorage.getItem(`favorites_${currentUser.name}`);
+                if (saved) {
+                    currentFavorites = JSON.parse(saved);
+                } else {
+                    currentFavorites = [];
+                }
+            }
+
+            // पसंदीदा कहानियों की स्क्रीन दिखाने का फंक्शन
+            function showFavorites() {
+                previousScreen = 'home-screen';
+                const favoriteStories = storiesDB.filter(story => currentFavorites.includes(story.id));
+                favoritesGrid.innerHTML = '';
+                if(favoriteStories.length > 0){
+                    renderStoryGrid(favoritesGrid, favoriteStories);
+                } else {
+                    favoritesGrid.innerHTML = '<p>आपने अभी तक कोई कहानी पसंदीदा में नहीं जोड़ी है।</p>';
+                }
+                showScreen('favorites-screen');
+            }
+            
+            // खोज फंक्शन
+            function handleSearch() {
+                const query = searchBar.value.toLowerCase().trim();
+                if (query.length < 2) {
+                    // अगर खोज खाली है, तो होम स्क्रीन दिखाएँ
+                    if(currentScreen === 'search-results-screen'){
+                       showScreen('home-screen');
+                    }
+                    return;
+                }
+                
+                const results = storiesDB.filter(story => 
+                    story.title.toLowerCase().includes(query) || 
+                    story.author.toLowerCase().includes(query)
+                );
+                
+                searchTitle.textContent = `'${query}' के लिए खोज परिणाम`;
+                searchResultsGrid.innerHTML = '';
+                if(results.length > 0){
+                   renderStoryGrid(searchResultsGrid, results);
+                } else {
+                    searchResultsGrid.innerHTML = `<p>कोई परिणाम नहीं मिला।</p>`;
+                }
+                showScreen('search-results-screen');
+            }
+
+
+            // कहानियों का ग्रिड बनाने का कॉमन फंक्शन
+            function renderStoryGrid(gridElement, stories) {
+                gridElement.innerHTML = '';
+                stories.forEach(story => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.dataset.storyId = story.id;
+                    card.innerHTML = `
+                        <div class="card-content">
+                            <h3>${story.title}</h3>
+                            <p>${story.author}</p>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => showStoryDetail(story.id));
+                    gridElement.appendChild(card);
+                });
+            }
+
+
+            // --- इवेंट लिस्टनर्स ---
+            loginForm.addEventListener('submit', handleLogin);
+            
+            appTitle.addEventListener('click', () => showScreen('home-screen'));
+
+            document.querySelectorAll('.back-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // पहले previousScreen को टारगेट करने की कोशिश करें, अगर न मिले तो data-target को
+                    const target = (previousScreen && document.getElementById(previousScreen)) ? previousScreen : btn.dataset.target;
+                    showScreen(target);
+                });
+            });
+
+            favoriteBtn.addEventListener('click', toggleFavorite);
+            favoritesIcon.addEventListener('click', showFavorites);
+            searchBar.addEventListener('input', handleSearch);
+
+        });
+    </script>
+</body>
+</html>
