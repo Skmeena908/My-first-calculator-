@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>किसान मित्र प्रो</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+            overscroll-behavior: none;
+            touch-action: manipulation;
+        }
+        
+        /* Welcome Screen */
+        #welcomeScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2ECC71, #3498DB);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+        
+        .logo-container {
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        
+        .logo-animation {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite, bounce 2s infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        
+        /* Language Selection */
+        #langScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2ECC71, #3498DB);
+            color: #fff;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 999;
+            padding: 20px;
+        }
+        
+        .langBtn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            padding: 18px;
+            margin: 12px 0;
+            width: 85%;
+            max-width: 300px;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        
+        .langBtn:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(0.98);
+        }
+        
+        /* Profile Setup */
+        #profileSetup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: none;
+            flex-direction: column;
+            z-index: 998;
+        }
+        
+        .profile-form {
+            padding: 25px 20px;
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .profile-pic {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: #f0f4f8;
+            margin: 0 auto 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3.5rem;
+            color: #2ECC71;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 3px solid #fff;
+        }
+        
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Main Screens */
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            background: #fff;
+        }
+        
+        .screen.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #2ECC71, #27AE60);
+            color: #fff;
+            padding: 16px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .backBtn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.6rem;
+            float: left;
+            margin-right: 15px;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        
+        .card:active {
+            transform: scale(0.98);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            background: #FF6B35;
+            color: #fff;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            margin: 8px 0;
+            box-shadow: 0 4px 8px rgba(255,107,53,0.3);
+            transition: all 0.2s;
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(255,107,53,0.3);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 8px 0;
+            font-size: 1rem;
+            background: #fff;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        input:focus, select:focus {
+            border-color: #2ECC71;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2);
+        }
+        
+        label {
+            font-weight: 500;
+            margin: 8px 0;
+            display: block;
+            color: #444;
+        }
+        
+        .bottomNav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #fff;
+            display: flex;
+            border-top: 1px solid #eee;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 20;
+        }
+        
+        .navBtn {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            background: none;
+            color: #888;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+     .navBtn.active {
+            color: #2ECC71;
+        }
+        
+        .navBtn i {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+        
+        .statusPaid {
+            background: #d4edda;
+            color: #155724;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        
+        .statusPending {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modalContent {
+            background: #fff;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: modalAppear 0.3s;
+        }
+        
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .editBtn {
+            background: #3498DB;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .delBtn {
+            background: #E74C3C;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .error {
+            border-color: #E74C3C !important;
+        }
+        
+        .error-message {
+            color: #E74C3C;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        /* Voice Recording */
+        .voice-recorder {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f4f8;
+            border-radius: 12px;
+        }
+        
+        .record-btn {
+            background: #3498DB;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            margin-right: 15px;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+            transition: all 0.2s;
+        }
+        
+        .record-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .record-btn.recording {
+            background: #E74C3C;
+            animation: pulse 1s infinite;
+        }
+        
+        .audio-player {
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 10px;
+            background: #f0f4f8;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 360px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-animation {
+                font-size: 3.5rem;
+            }
+            
+            .profile-pic {
+                width: 110px;
+                height: 110px;
+            }
+        }
+        
+        /* Custom select arrow */
+        select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 45px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Animation -->
+    <div id="welcomeScreen">
+        <div class="logo-container">
+            <i class="fas fa-tractor logo-animation"></i>
+            <h2>किसान मित्र प्रो</h2>
+            <p>आपका स्वागत है</p>
+        </div>
+    </div>
+
+    <!-- Language Selection -->
+    <div id="langScreen">
+        <div>
+            <i class="fas fa-tractor" style="font-size:4rem; margin-bottom:15px;"></i>
+            <h2 style="margin-bottom:10px;">किसान मित्र प्रो</h2>
+            <p style="margin-bottom:25px;">भाषा चुनें / Select Language</p>
+            <button class="langBtn" onclick="setLanguage('hindi')">हिंदी</button>
+            <button class="langBtn" onclick="setLanguage('english')">English</button>
+        </div>
+    </div>
+
+    <!-- Profile Setup -->
+    <div id="profileSetup">
+        <header>
+            <span id="profileTitle">प्रोफाइल सेटअप</span>
+        </header>
+        <div class="profile-form">
+            <div class="profile-pic" id="profileImageContainer" onclick="document.getElementById('profileUpload').click()">
+                <i class="fas fa-user-plus"></i>
+                <img id="profileImage" class="hidden">
+            </div>
+            <input type="file" id="profileUpload" accept="image/*" class="hidden">
+            
+            <input type="text" id="userName" placeholder="* आपका नाम" style="margin-bottom:20px;">
+            
+            <button class="btn" onclick="saveProfile()">जारी रखें</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="screen">
+        <header>
+            <span id="title">किसान मित्र</span>
+        </header>
+        <div class="content">
+            <div class="grid">
+                <div class="card">
+                    <i class="fas fa-calendar-day" style="color:#2ECC71; font-size:1.8rem; margin-bottom:8px;"></i>
+                    <span id="todayWork">आज का काम</span>
+                    <br>
+                    <b id="todayCount">0</b>
+                </div>
+                <div class="card">
+                    <i class="fas fa-rupee-sign" style="color:#2ECC71; font-size:1.8rem; margin-bottom:8px;"></i>
+                    <span id="monthIncome">इस महीने की कमाई</span>
+                    <br>
+                    <b id="monthIncomeVal">₹0</b>
+                </div>
+                <div class="card">
+                    <i class="fas fa-clock" style="color:#FF6B35; font-size:1.8rem; margin-bottom:8px;"></i>
+                    <span id="pendingPay">लंबित भुगतान</span>
+                    <br>
+                    <b id="pendingAmt">₹0</b>
+                </div>
+                <div class="card">
+                    <i class="fas fa-users" style="color:#3498DB; font-size:1.8rem; margin-bottom:8px;"></i>
+                    <span id="totalCust">कुल ग्राहक</span>
+                    <br>
+                    <b id="customerCount">0</b>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="showScreen('addWork')">
+                <i class="fas fa-plus"></i> 
+                <span id="addWorkBtn">नया काम जोड़ें</span>
+            </button>
+            
+            <h3 style="margin:20px 0 10px; color:#555;">हाल के काम</h3>
+            <div id="recentList"></div>
+        </div>
+    </div>
+  <!-- Add/Edit Work -->
+    <div id="addWork" class="screen">
+        <header>
+            <button class="backBtn" onclick="showScreen('dashboard')">‹</button>
+            <span id="addTitle">नया काम जोड़ें</span>
+        </header>
+        <div class="content">
+            <form id="workForm">
+                <input type="hidden" id="editId">
+                
+                <input type="text" id="custName" placeholder="* ग्राहक का नाम">
+                <div id="custNameError" class="error-message hidden">कृपया ग्राहक का नाम दर्ज करें</div>
+                
+                <input type="tel" id="custMobile" placeholder="मोबाइल नंबर">
+                
+                <select id="custVillage">
+                    <option value="">* गाँव चुनें</option>
+                    <option>Bas Bisna</option>
+                    <option>Bhatiwar</option>
+                    <option>Ked</option>
+                    <option>Balaji</option>
+                    <option>Chanana</option>
+                    <option>Sultana</option>
+                    <option>Gudha</option>
+                    <option value="other">अन्य</option>
+                </select>
+                <div id="custVillageError" class="error-message hidden">कृपया गाँव चुनें</div>
+                
+                <select id="workType">
+                    <option value="">* काम का प्रकार</option>
+                    <option>खेत जोतना (Ploughing)</option>
+                    <option>फसल कटाई (Harvesting)</option>
+                    <option>बुवाई (Sowing)</option>
+                    <option>ढुलाई (Transport)</option>
+                    <option>सिंचाई (Irrigation)</option>
+                    <option>खरपतवार निकालना (Weeding)</option>
+                    <option>खाद डालना (Fertilizing)</option>
+                    <option>स्प्रे (Spraying)</option>
+                    <option>थ्रेसिंग (Threshing)</option>
+                    <option>ट्रैक्टर सर्विस (Tractor Service)</option>
+                    <option value="other">अन्य (Other)</option>
+                </select>
+                <div id="workTypeError" class="error-message hidden">कृपया काम का प्रकार चुनें</div>
+                
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:10px;">
+                    <input type="number" id="workQty" placeholder="* मात्रा">
+                    <select id="workUnit">
+                        <option>भीगा</option>
+                        <option>एकड़</option>
+                        <option>घंटे</option>
+                        <option>दिन</option>
+                        <option value="other">अन्य</option>
+                    </select>
+                </div>
+                <div id="workQtyError" class="error-message hidden">कृपया मात्रा दर्ज करें</div>
+                
+                <input type="number" id="workRate" placeholder="* दर (₹)">
+                <div id="workRateError" class="error-message hidden">कृपया दर दर्ज करें</div>
+                
+                <input type="number" id="totalAmount" placeholder="* कुल राशि" readonly>
+                <div id="totalAmountError" class="error-message hidden">कृपया कुल राशि दर्ज करें</div>
+                
+                <input type="date" id="workDate">
+                <div id="workDateError" class="error-message hidden">कृपया तारीख चुनें</div>
+                
+                <select id="paymentStatus">
+                    <option value="">* भुगतान स्थिति</option>
+                    <option value="pending">भुगतान लंबित</option>
+                    <option value="partial">आधा भुगतान</option>
+                    <option value="paid">पूरा भुगतान</option>
+                </select>
+                <div id="paymentStatusError" class="error-message hidden">कृपया भुगतान स्थिति चुनें</div>
+                
+                <input type="number" id="paidAmount" placeholder="मिली राशि" class="hidden">
+                
+                <!-- Voice Recording -->
+                <div class="voice-recorder">
+                    <button type="button" class="record-btn" id="recordBtn">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <span id="recordStatus">वॉइस नोट जोड़ें</span>
+                </div>
+                <audio id="audioPlayer" class="audio-player hidden" controls></audio>
+                <input type="hidden" id="voiceNote">
+                
+                <button type="button" class="btn" id="saveBtn" onclick="saveWork()">सहेजें</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- All Works List -->
+    <div id="worksList" class="screen">
+        <header>
+            <button class="backBtn" onclick="showScreen('dashboard')">‹</button>
+            <span id="worksTitle">सभी काम</span>
+        </header>
+        <div class="content" id="allWorksList"></div>
+    </div>
+
+    <!-- Customer Details & Payments -->
+    <div id="customerDetail" class="screen">
+        <header>
+            <button class="backBtn" onclick="showScreen('payments')">‹</button>
+            <span id="custDetailTitle">ग्राहक विवरण</span>
+        </header>
+        <div class="content">
+            <div id="customerInfo"></div>
+            <div id="customerWorks"></div>
+        </div>
+    </div>
+
+    <!-- Payments List -->
+    <div id="payments" class="screen">
+        <header>
+            <button class="backBtn" onclick="showScreen('dashboard')">‹</button>
+            <span id="payTitle">भुगतान</span>
+        </header>
+        <div class="content">
+            <input type="text" id="searchCustomer" placeholder="ग्राहक खोजें..." oninput="filterCustomers(this.value)">
+            <div id="customerList"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottomNav">
+        <button class="navBtn active" onclick="showScreen('dashboard')">
+            <i class="fas fa-home"></i>
+            <span id="navHome">होम</span>
+        </button>
+        <button class="navBtn" onclick="showScreen('addWork')">
+            <i class="fas fa-plus-circle"></i>
+            <span id="navAdd">जोड़ें</span>
+        </button>
+        <button class="navBtn" onclick="showScreen('payments')">
+            <i class="fas fa-rupee-sign"></i>
+            <span id="navPay">भुगतान</span>
+        </button>
+        <button class="navBtn" onclick="showAllWorks()">
+            <i class="fas fa-list"></i>
+            <span id="navList">सूची</span>
+        </button>
+    </div>
+
+    <!-- Other Option Modal -->
+    <div id="otherModal" class="modal">
+        <div class="modalContent">
+            <h3 id="otherModalTitle">अन्य विकल्प जोड़ें</h3>
+            <input type="text" id="otherInput" placeholder="दर्ज करें" style="margin:15px 0;">
+            <button class="btn" onclick="addOtherOption()" style="margin-bottom:10px;">जोड़ें</button>
+            <button class="btn" style="background:#666; margin-bottom:0;" onclick="closeOtherModal()">रद्द करें</button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payModal" class="modal">
+        <div class="modalContent">
+            <h3>भुगतान अपडेट</h3>
+            <p style="margin:15px 0;">ग्राहक: <span id="modalCustomer"></span></p>
+            <p style="margin:15px 0;">लंबित राशि: ₹<span id="modalPending"></span></p>
+            <input type="number" id="modalAmount" placeholder="भुगतान राशि" style="margin:15px 0;">
+            <button class="btn" onclick="updatePayment()" style="margin-bottom:10px;">अपडेट करें</button>
+            <button class="btn" style="background:#666; margin-bottom:0;" onclick="closeModal()">रद्द करें</button>
+        </div>
+    </div>
+<script>
+        // Language Texts
+        const texts = {
+            hindi: {
+                title: "किसान मित्र",
+                addTitle: "नया काम जोड़ें",
+                worksTitle: "सभी काम",
+                payTitle: "भुगतान",
+                custDetailTitle: "ग्राहक विवरण",
+                todayWork: "आज का काम",
+                monthIncome: "इस महीने की कमाई",
+                pendingPay: "लंबित भुगतान",
+                totalCust: "कुल ग्राहक",
+                addWorkBtn: "नया काम जोड़ें",
+                search: "ग्राहक खोजें...",
+                save: "सहेजें",
+                navHome: "होम",
+                navAdd: "जोड़ें",
+                navPay: "भुगतान",
+                navList: "सूची",
+                profileTitle: "प्रोफाइल सेटअप",
+                otherModalTitle: "अन्य विकल्प जोड़ें"
+            },
+            english: {
+                title: "Farmer Buddy",
+                addTitle: "Add Work",
+                worksTitle: "All Works",
+                payTitle: "Payments",
+                custDetailTitle: "Customer Details",
+                todayWork: "Today's Work",
+                monthIncome: "This Month Income",
+                pendingPay: "Pending Payment",
+                totalCust: "Total Customers",
+                addWorkBtn: "Add New Work",
+                search: "Search customers...",
+                save: "Save",
+                navHome: "Home",
+                navAdd: "Add",
+                navPay: "Payments",
+                navList: "List",
+                profileTitle: "Profile Setup",
+                otherModalTitle: "Add Other Option"
+            }
+        };
+        
+        // App State
+        let currentLanguage = 'hindi';
+        let appData = { works: [], customers: {} };
+        let editingId = null;
+        let currentCustomer = null;
+        let currentOtherField = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        
+        // Initialize App
+        function initApp() {
+            // Show welcome screen first
+            showElement('welcomeScreen');
+            
+            // Check if we have existing data
+            const savedData = localStorage.getItem('farmData');
+            const userProfile = localStorage.getItem('userProfile');
+            const savedLanguage = localStorage.getItem('language');
+            
+            // After 3 seconds, move to next screen
+            setTimeout(() => {
+                hideElement('welcomeScreen');
+                
+                if (userProfile) {
+                    // We have a profile, check language
+                    if (savedLanguage) {
+                        setLanguage(savedLanguage);
+                    } else {
+                        showElement('langScreen');
+                    }
+                } else {
+                    // No profile, show profile setup
+                    showElement('profileSetup');
+                }
+                
+                // Load data if exists
+                if (savedData) {
+                    appData = JSON.parse(savedData);
+                }
+            }, 3000);
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('workDate').value = today;
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Profile image upload
+            document.getElementById('profileUpload').addEventListener('change', handleProfileUpload);
+            
+            // Other option selection
+            document.querySelectorAll('select').forEach(select => {
+                select.addEventListener('change', function() {
+                    if (this.value === 'other') {
+                        currentOtherField = this.id;
+                        showElement('otherModal');
+                    }
+                });
+            });
+            
+            // Auto calculations
+            document.getElementById('workQty').addEventListener('input', calculateTotal);
+            document.getElementById('workRate').addEventListener('input', calculateTotal);
+            
+            // Payment status change
+            document.getElementById('paymentStatus').addEventListener('change', function() {
+                const paidAmountField = document.getElementById('paidAmount');
+                if (this.value === 'partial') {
+                    paidAmountField.classList.remove('hidden');
+                } else {
+                    paidAmountField.classList.add('hidden');
+                }
+            });
+            
+            // Voice recording
+            document.getElementById('recordBtn').addEventListener('click', toggleRecording);
+        }
+        
+        // Handle profile image upload
+        function handleProfileUpload(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                    document.getElementById('profileImage').classList.remove('hidden');
+                    document.querySelector('#profileImageContainer i').classList.add('hidden');
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        }
+        
+        // Calculate total amount
+        function calculateTotal() {
+            const qty = parseFloat(document.getElementById('workQty').value) || 0;
+            const rate = parseFloat(document.getElementById('workRate').value) || 0;
+            document.getElementById('totalAmount').value = (qty * rate).toFixed(2);
+        }
+        
+        // Toggle voice recording
+        function toggleRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                // Stop recording
+                mediaRecorder.stop();
+                document.getElementById('recordBtn').classList.remove('recording');
+                document.getElementById('recordStatus').textContent = "रिकॉर्डिंग बंद";
+            } else {
+                // Start recording
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(stream => {
+                            mediaRecorder = new MediaRecorder(stream);
+                            audioChunks = [];
+                            
+                            mediaRecorder.ondataavailable = event => {
+                                audioChunks.push(event.data);
+                            };
+                            
+                            mediaRecorder.onstop = () => {
+                                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                                const audioUrl = URL.createObjectURL(audioBlob);
+                                document.getElementById('audioPlayer').src = audioUrl;
+                                document.getElementById('audioPlayer').classList.remove('hidden');
+                                
+                                // Convert to base64 for storage
+                                const reader = new FileReader();
+                                reader.readAsDataURL(audioBlob);
+                                reader.onloadend = () => {
+                                    document.getElementById('voiceNote').value = reader.result;
+                                };
+                            };
+                            
+                            mediaRecorder.start();
+                            document.getElementById('recordBtn').classList.add('recording');
+                            document.getElementById('recordStatus').textContent = "रिकॉर्डिंग चल रही है...";
+                        })
+                        .catch(error => {
+                            console.error("Error accessing microphone:", error);
+                            alert("माइक्रोफ़ोन एक्सेस के लिए अनुमति आवश्यक है");
+                        });
+                } else {
+                    alert("आपका ब्राउज़र वॉइस रिकॉर्डिंग का समर्थन नहीं करता है");
+                }
+            }
+        }
+        
+        // Set language
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            applyLanguage();
+            
+            if (localStorage.getItem('userProfile')) {
+                showScreen('dashboard');
+            } else {
+                showElement('profileSetup');
+            }
+        }
+        
+        // Apply language texts
+        function applyLanguage() {
+            Object.keys(texts[currentLanguage]).forEach(key => {
+                const elements = document.querySelectorAll(`[id="${key}"]`);
+                elements.forEach(el => {
+                    if (el.tagName === 'INPUT' && el.type !== 'hidden') {
+                        el.placeholder = texts[currentLanguage][key];
+                    } else {
+                        el.textContent = texts[currentLanguage][key];
+                    }
+                });
+            });
+        }
+        
+        // Save profile
+        function saveProfile() {
+            const userName = document.getElementById('userName').value;
+            if (!userName) {
+                alert("कृपया अपना नाम दर्ज करें");
+                return;
+            }
+            
+            const profileImage = document.getElementById('profileImage').src || '';
+            const profile = { name: userName, image: profileImage };
+            
+            localStorage.setItem('userProfile', JSON.stringify(profile));
+            hideElement('profileSetup');
+            
+            if (localStorage.getItem('language')) {
+                showScreen('dashboard');
+            } else {
+                showElement('langScreen');
+            }
+        }
+        
+        // Show screen
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show requested screen
+            document.getElementById(screenId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.navBtn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Set active nav button
+            if (screenId === 'dashboard') {
+                document.querySelectorAll('.navBtn')[0].classList.add('active');
+                refreshDashboard();
+            } else if (screenId === 'addWork') {
+                document.querySelectorAll('.navBtn')[1].classList.add('active');
+            } else if (screenId === 'payments') {
+                document.querySelectorAll('.navBtn')[2].classList.add('active');
+                loadPayments();
+            } else if (screenId === 'worksList') {
+                document.querySelectorAll('.navBtn')[3].classList.add('active');
+                showAllWorks();
+            }
+        }
+        // Refresh dashboard
+        function refreshDashboard() {
+            const today = new Date().toISOString().split('T')[0];
+            const thisMonth = new Date().toISOString().substring(0, 7);
+            
+            // Today's work count
+            const todayWorks = appData.works.filter(work => work.date === today);
+            document.getElementById('todayCount').textContent = todayWorks.length;
+            
+            // This month's income
+            const monthIncome = appData.works
+                .filter(work => work.date.startsWith(thisMonth))
+                .reduce((total, work) => total + (work.paid || 0), 0);
+            document.getElementById('monthIncomeVal').textContent = `₹${monthIncome.toFixed(2)}`;
+            
+            // Pending amount
+            const pendingAmount = appData.works
+                .reduce((total, work) => total + (work.total - (work.paid || 0)), 0);
+            document.getElementById('pendingAmt').textContent = `₹${pendingAmount.toFixed(2)}`;
+            
+            // Customer count
+            const customerCount = Object.keys(appData.customers).length;
+            document.getElementById('customerCount').textContent = customerCount;
+            
+            // Recent works
+            const recentList = document.getElementById('recentList');
+            if (appData.works.length === 0) {
+                recentList.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">कोई काम नहीं जोड़ा गया है</p>';
+            } else {
+                const recentWorks = appData.works.slice(-5).reverse();
+                recentList.innerHTML = recentWorks.map(work => `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between;">
+                            <b>${work.customer}</b>
+                            <span class="${work.status === 'paid' ? 'statusPaid' : 'statusPending'}">
+                                ${work.status === 'paid' ? 'पूरा' : work.status === 'partial' ? 'आधा' : 'लंबित'}
+                            </span>
+                        </div>
+                        <div>${work.type} - ${work.qty} ${work.unit}</div>
+                        <div>₹${work.total} • ${work.date}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Save work
+        function saveWork() {
+            // Validate form
+            if (!validateForm()) {
+                return;
+            }
+            
+            const workId = document.getElementById('editId').value || Date.now();
+            const work = {
+                id: workId,
+                date: document.getElementById('workDate').value,
+                customer: document.getElementById('custName').value,
+                mobile: document.getElementById('custMobile').value,
+                village: document.getElementById('custVillage').value,
+                type: document.getElementById('workType').value,
+                qty: parseFloat(document.getElementById('workQty').value),
+                unit: document.getElementById('workUnit').value,
+                rate: parseFloat(document.getElementById('workRate').value),
+                total: parseFloat(document.getElementById('totalAmount').value),
+                status: document.getElementById('paymentStatus').value,
+                voiceNote: document.getElementById('voiceNote').value
+            };
+            
+            // Set paid amount based on status
+            if (work.status === 'paid') {
+                work.paid = work.total;
+            } else if (work.status === 'partial') {
+                work.paid = parseFloat(document.getElementById('paidAmount').value) || 0;
+            } else {
+                work.paid = 0;
+            }
+            
+            // Add or update work
+            if (document.getElementById('editId').value) {
+                // Update existing work
+                const index = appData.works.findIndex(w => w.id === workId);
+                if (index !== -1) {
+                    appData.works[index] = work;
+                }
+            } else {
+                // Add new work
+                appData.works.push(work);
+            }
+            
+            // Update customers
+            const customerKey = work.mobile || work.customer;
+            if (!appData.customers[customerKey]) {
+                appData.customers[customerKey] = [];
+            }
+            
+            const customerWorkIndex = appData.customers[customerKey].findIndex(w => w.id === workId);
+            if (customerWorkIndex !== -1) {
+                appData.customers[customerKey][customerWorkIndex] = work;
+            } else {
+                appData.customers[customerKey].push(work);
+            }
+            
+            // Save data
+            localStorage.setItem('farmData', JSON.stringify(appData));
+            
+            // Reset form and return to dashboard
+            document.getElementById('workForm').reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('audioPlayer').classList.add('hidden');
+            document.getElementById('paidAmount').classList.add('hidden');
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('workDate').value = today;
+            
+            showScreen('dashboard');
+            alert("काम सफलतापूर्वक सहेजा गया!");
+        }
+        
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            const requiredFields = [
+                'custName', 'custVillage', 'workType', 'workQty', 
+                'workRate', 'totalAmount', 'workDate', 'paymentStatus'
+            ];
+
+requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                const errorElement = document.getElementById(field + 'Error');
+                
+                if (!element.value) {
+                    element.classList.add('error');
+                    errorElement.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    element.classList.remove('error');
+                    errorElement.classList.add('hidden');
+                }
+            });
+            
+            // Validate partial payment
+            if (document.getElementById('paymentStatus').value === 'partial') {
+                const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+                const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+                
+                if (paidAmount <= 0 || paidAmount >= totalAmount) {
+                    alert("आधे भुगतान के लिए राशि 0 से अधिक और कुल राशि से कम होनी चाहिए");
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        }
+        
+        // Show all works
+        function showAllWorks() {
+            const worksList = document.getElementById('allWorksList');
+            
+            if (appData.works.length === 0) {
+                worksList.innerHTML = '<p style="text-align:center; color:#666; padding:30px;">कोई काम नहीं जोड़ा गया है</p>';
+                return;
+            }
+            
+            worksList.innerHTML = appData.works.map(work => `
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div>
+                            <b>${work.customer}</b> (${work.village})<br>
+                            ${work.type} - ${work.qty} ${work.unit} @ ₹${work.rate}<br>
+                            कुल: ₹${work.total} | मिला: ₹${work.paid || 0} | लंबित: ₹${work.total - (work.paid || 0)}<br>
+                            <small>${work.date}</small>
+                        </div>
+                        <span class="${work.status === 'paid' ? 'statusPaid' : 'statusPending'}">
+                            ${work.status === 'paid' ? 'पूरा' : work.status === 'partial' ? 'आधा' : 'लंबित'}
+                        </span>
+                    </div>
+                    ${work.voiceNote ? `
+                        <div style="margin-top:10px;">
+                            <audio src="${work.voiceNote}" controls class="audio-player"></audio>
+                        </div>
+                    ` : ''}
+                    <div style="margin-top:15px; display:flex; justify-content:flex-end;">
+                        <button class="editBtn" onclick="editWork(${work.id})">एडिट</button>
+                        <button class="delBtn" onclick="deleteWork(${work.id})">डिलीट</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            showScreen('worksList');
+        }
+        
+        // Edit work
+        function editWork(id) {
+            const work = appData.works.find(w => w.id === id);
+            if (!work) return;
+            
+            // Fill form with work data
+            document.getElementById('editId').value = work.id;
+            document.getElementById('custName').value = work.customer;
+            document.getElementById('custMobile').value = work.mobile || '';
+            document.getElementById('custVillage').value = work.village;
+            document.getElementById('workType').value = work.type;
+            document.getElementById('workDate').value = work.date;
+            document.getElementById('workQty').value = work.qty;
+            document.getElementById('workUnit').value = work.unit;
+            document.getElementById('workRate').value = work.rate;
+            document.getElementById('totalAmount').value = work.total;
+            document.getElementById('paymentStatus').value = work.status;
+            document.getElementById('paidAmount').value = work.paid || '';
+            document.getElementById('voiceNote').value = work.voiceNote || '';
+            
+            // Show/hide paid amount field
+            if (work.status === 'partial') {
+                document.getElementById('paidAmount').classList.remove('hidden');
+            } else {
+                document.getElementById('paidAmount').classList.add('hidden');
+            }
+            
+            // Show voice note if exists
+            if (work.voiceNote) {
+                document.getElementById('audioPlayer').src = work.voiceNote;
+                document.getElementById('audioPlayer').classList.remove('hidden');
+            }
+            
+            // Update button text
+            document.getElementById('saveBtn').textContent = 'अपडेट करें';
+            
+            showScreen('addWork');
+        }
+        
+        // Delete work
+        function deleteWork(id) {
+            if (!confirm('क्या आप वाकई इस काम को डिलीट करना चाहते हैं?')) return;
+            
+            // Remove from works
+            appData.works = appData.works.filter(w => w.id !== id);
+            
+            // Remove from customers
+            Object.keys(appData.customers).forEach(key => {
+                appData.customers[key] = appData.customers[key].filter(w => w.id !== id);
+                if (appData.customers[key].length === 0) {
+                    delete appData.customers[key];
+                }
+            });
+            
+            // Save data
+            localStorage.setItem('farmData', JSON.stringify(appData));
+            
+            // Refresh view
+            if (document.getElementById('worksList').classList.contains('active')) {
+                showAllWorks();
+            } else {
+                refreshDashboard();
+            }
+        }
+        
+        // Load payments
+        function loadPayments() {
+            const customerList = document.getElementById('customerList');
+            
+            if (Object.keys(appData.customers).length === 0) {
+                customerList.innerHTML = '<p style="text-align:center; color:#666; padding:30px;">कोई ग्राहक नहीं जोड़ा गया है</p>';
+                return;
+            }
+customerList.innerHTML = Object.entries(appData.customers).map(([key, works]) => {
+                const total = works.reduce((sum, work) => sum + work.total, 0);
+                const paid = works.reduce((sum, work) => sum + (work.paid || 0), 0);
+                const pending = total - paid;
+                
+                return `
+                    <div class="card" onclick="showCustomerDetail('${key}')">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <b>${works[0].customer}</b><br>
+                                ${works[0].mobile ? works[0].mobile + ' • ' : ''}${works[0].village}<br>
+                                <b>कुल: ₹${total} • लंबित: ₹${pending}</b>
+                            </div>
+                            <span class="${pending > 0 ? 'statusPending' : 'statusPaid'}">
+                                ${pending > 0 ? 'लंबित' : 'पूरा'}
+                            </span>
+                        </div>
+                        ${pending > 0 ? `
+                            <button class="btn" style="margin-top:15px;" onclick="event.stopPropagation(); showPayModal('${key}')">
+                                भुगतान अपडेट
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Show customer detail
+        function showCustomerDetail(customerKey) {
+            currentCustomer = customerKey;
+            const works = appData.customers[customerKey];
+            const total = works.reduce((sum, work) => sum + work.total, 0);
+            const paid = works.reduce((sum, work) => sum + (work.paid || 0), 0);
+            const pending = total - paid;
+            
+            document.getElementById('customerInfo').innerHTML = `
+                <div class="card">
+                    <h3>${works[0].customer}</h3>
+                    ${works[0].mobile ? `<p>📱 ${works[0].mobile}</p>` : ''}
+                    <p>🏘️ ${works[0].village}</p>
+                    <p><b>कुल काम: ${works.length}</b></p>
+                    <p><b>कुल राशि: ₹${total}</b></p>
+                    <p><b>मिली राशि: ₹${paid}</b></p>
+                    <p><b>लंबित: ₹${pending}</b></p>
+                    ${pending > 0 ? `
+                        <button class="btn" onclick="showPayModal('${customerKey}')" style="margin-top:15px;">
+                            भुगतान अपडेट
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+            
+            document.getElementById('customerWorks').innerHTML = works.map(work => `
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <b>${work.date} - ${work.type}</b>
+                        <span class="${work.status === 'paid' ? 'statusPaid' : 'statusPending'}">
+                            ${work.status === 'paid' ? 'पूरा' : work.status === 'partial' ? 'आधा' : 'लंबित'}
+                        </span>
+                    </div>
+                    <div>${work.qty} ${work.unit} @ ₹${work.rate}</div>
+                    <div>कुल: ₹${work.total} | मिला: ₹${work.paid || 0}</div>
+                    ${work.voiceNote ? `
+                        <div style="margin-top:10px;">
+                            <audio src="${work.voiceNote}" controls class="audio-player"></audio>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+            
+            showScreen('customerDetail');
+        }
+        
+        // Show payment modal
+        function showPayModal(customerKey) {
+            currentCustomer = customerKey;
+            const works = appData.customers[customerKey];
+            const total = works.reduce((sum, work) => sum + work.total, 0);
+            const paid = works.reduce((sum, work) => sum + (work.paid || 0), 0);
+            const pending = total - paid;
+            
+            document.getElementById('modalCustomer').textContent = works[0].customer;
+            document.getElementById('modalPending').textContent = pending.toFixed(2);
+            document.getElementById('modalAmount').value = '';
+            showElement('payModal');
+        }
+        
+        // Update payment
+        function updatePayment() {
+            const amount = parseFloat(document.getElementById('modalAmount').value);
+            if (!amount || amount <= 0) {
+                alert("कृपया वैध राशि दर्ज करें");
+                return;
+            }
+            
+            const works = appData.customers[currentCustomer];
+            let remaining = amount;
+            
+            // Distribute payment to works with pending amounts
+            for (let work of works) {
+                if (remaining <= 0) break;
+                
+                const pendingAmount = work.total - (work.paid || 0);
+                if (pendingAmount > 0) {
+                    const payment = Math.min(remaining, pendingAmount);
+                    work.paid = (work.paid || 0) + payment;
+                    remaining -= payment;
+                    
+                    // Update payment status
+                    if (work.paid >= work.total) {
+                        work.status = 'paid';
+                    } else if (work.paid > 0) {
+                        work.status = 'partial';
+                    }
+                }
+            }
+            
+            // Update main works array
+            works.forEach(updatedWork => {
+                const index = appData.works.findIndex(w => w.id === updatedWork.id);
+                if (index !== -1) {
+                    appData.works[index] = updatedWork;
+                }
+            });
+            
+            // Save data
+            localStorage.setItem('farmData', JSON.stringify(appData));
+            
+            closeModal();
+            
+            if (document.getElementById('customerDetail').classList.contains('active')) {
+                showCustomerDetail(currentCustomer);
+            } else {
+                loadPayments();
+            }
+            
+            alert("भुगतान सफलतापूर्वक अपडेट किया गया!");
+        }
+        
+        // Add other option
+        function addOtherOption() {
+            const value = document.getElementById('otherInput').value;
+            if (!value) {
+                alert("कृपया एक मान दर्ज करें");
+                return;
+            }
+            
+            const select = document.getElementById(currentOtherField);
+            const newOption = document.createElement('option');
+            newOption.value = value;
+            newOption.textContent = value;
+            select.appendChild(newOption);
+            select.value = value;
+            
+            closeOtherModal();
+        }
+        
+        // Filter customers
+        function filterCustomers(query) {
+            const customerList = document.getElementById('customerList');
+            const cards = customerList.querySelectorAll('.card');
+            
+            if (!query) {
+                cards.forEach(card => card.style.display = 'block');
+                return;
+            }
+            
+            const searchTerm = query.toLowerCase();
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+        
+        // Utility functions
+        function showElement(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+        
+        function hideElement(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+        
+        function closeModal() {
+            hideElement('payModal');
+        }
+        
+        function closeOtherModal() {
+            hideElement('otherModal');
+            document.getElementById('otherInput').value = '';
+        }
+        
+        // Initialize app when page loads
+        window.onload = initApp;
+    </script>
+</body>
+</html>
